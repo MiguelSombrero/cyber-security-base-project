@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/security/tags">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Frontpage</title>
+    </head>
+    <body>
+        <div style="align-content: center" th:fragment="navbar">
+            <nav >
+                <ul style="list-style-type: none">
+                    <li style="float:left">
+                        <a style="display: inline; text-align: center; padding: 16px" th:href="@{/}">Home</a>
+                    </li>
+                </ul>
+                <ul style="list-style-type: none">
+                    <li style="float:left">
+                        <a style="display: inline; text-align: center; padding: 16px" th:href="@{/form}">Sign events</a>
+                    </li>
+                </ul>
+                <ul style="list-style-type: none">
+                    <li style="float:left">
+                        <a style="display: inline; text-align: center; padding: 16px" th:href="@{/profile/{username}(username=${#authentication.principal.username})}">Profile</a>
+                    </li>
+                </ul>
+                <ul style="list-style-type: none">
+                    <li style="float:left">
+                        <form style="display: inline; text-align: center; padding: 16px" th:action="@{/logout}" action="#" method="POST">
+                            <input type="submit" value="Logout"></input>
+                        </form>
+                    </li>
+                </ul>
+            </nav>
+            <br/>
+            <br/>
+        </div>
+        
+    </body>
+</html>

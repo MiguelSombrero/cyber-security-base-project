@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/security/tags">
+    <head>
+        <title>Frontpage</title>
+    </head>
+    <body style="text-align: center">
+        <nav th:replace="fragments/navigation :: navbar"></nav>
+
+        <h1>Welcome to the Cyber Security Forum!</h1>
+
+        <h1>Sign up for the incoming event: How to build secure websites</h1>
+        
+        <a th:href="@{/form}">To the sign up form</a>
+        
+        <p></p>
+    </body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/security/tags">
+    <head>
+        <title>Register</title>
+    </head>
+    <body style="text-align: center">
+        <h1>Create account for Cyber Security Forum</h1>
+
+        <form action="#" th:action="@{/register}" method="POST">
+            <p><label for="name">Name</label>:<input type="text" autofocus="true" name="name" placeholder="Name"/></p>
+            <p><label for="name">Username</label>:<input type="text" name="username" placeholder="Username"/></p>
+            <p><label for="name">Password</label>:<input type="password" name="password" placeholder="Password"/></p>
+            <p><input name="submit" type="submit" value="Create account" /></p>
+        </form>
+        
+        <h1>... Or login:</h1>
+        
+        <a th:href="@{/login}">Login</a>
+        
+    </body>
+</html>

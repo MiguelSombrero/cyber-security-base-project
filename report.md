@@ -36,7 +36,7 @@ Link to [repository](https://github.com/MiguelSombrero/cyber-security-base-proje
 
 ## Flaw 5 - Sensitive data exposure
 
-**MUISTIINPANO - POISTA: jätä käyttäjän salasanat kryptaamatta.**
+**MUISTIINPANO - POISTA: Käyttäjän profiilisivulle pääsee syöttämällä suoraan osoitekenttää /profile/{username}.. Profiilisivulla on tietoa, joka saa näkyä vain käyttäjälle.**
 
 ### Description
 

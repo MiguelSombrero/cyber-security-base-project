@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/security/tags">
+    <head>
+        <title>Signees</title>
+    </head>
+    <body style="text-align: center">
+        <nav th:replace="fragments/navigation :: navbar"></nav>
+        <h1>Signed for the Annual Cyber Security Forum:</h1>
+
+        <ul>
+            <li th:each="person : ${participants}">
+                <span th:text="${person.name}">name</span>
+                <span th:text="${person.address}">name</span>
+            </li>
+        </ul>
+        
+    </body>
+</html>

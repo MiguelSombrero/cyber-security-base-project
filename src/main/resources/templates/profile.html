@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/security/tags">
+    <head>
+        <title>User profile</title>
+    </head>
+    <body style="text-align: center">
+        <nav th:replace="fragments/navigation :: navbar"></nav>
+
+        <h1 th:text="${user.name + ' ''s profile'}">Profile</h1>
+        <p th:text="${'Username: ' + user.username}">Username</p>
+        <p>Other sensitive information, maybe address and stuff?</p>
+        
+    </body>
+</html>

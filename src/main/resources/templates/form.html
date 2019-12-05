@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/security/tags">
     <head>
         <title>Sign up form</title>
     </head>
-    <body>
-
+    <body style="text-align: center">
+        <nav th:replace="fragments/navigation :: navbar"></nav>
         <h1>Sign up to the event using this form</h1>
 
         <form action="#" th:action="@{/form}" method="POST">

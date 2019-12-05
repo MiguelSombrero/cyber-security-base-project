@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/security/tags">
+    <head>
+        <title>Login</title>
+    </head>
+    <body style="text-align: center">
+
+        <h1>Login to Cyber Security Forum</h1>
+
+        <form action="#" th:action="@{/login}" method="POST">
+            <p th:if="${param.error}">Invalid username or password</p>
+            <p th:if="${param.logout}">You have been logged out ...</p>
+            <p><input type="text" autofocus="true" name="username" placeholder="Username"/></p>
+            <p><input type="password" name="password" placeholder="Password"/></p>
+            <p><input name="submit" type="submit" value="Login" /></p>
+        </form>
+        
+        <h1>... Or create and account:</h1>
+        
+        <a th:href="@{/register}">Register</a>
+        
+        
+    </body>
+</html>
