@@ -1,17 +1,48 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/security/tags">
-    <head>
-        <title>Frontpage</title>
+    <head th:replace="fragments/head :: head(title='Index')">
+        <meta charset="UTF-8" />
+        <title>Title</title>
     </head>
-    <body style="text-align: center">
+    <body>
         <nav th:replace="fragments/navigation :: navbar"></nav>
-
-        <h1>Welcome to the Cyber Security Forum!</h1>
-
-        <h1>Sign up for the incoming event: How to build secure websites</h1>
         
-        <a th:href="@{/form}">To the sign up form</a>
+        <div class='container-fluid text-center'>
+            <div th:replace="fragments/title :: title(text='Welcome to the Cyber Security forum!')"></div>
         
-        <p></p>
+            <div class='row'>
+                <div class='col-4'>
+                    <div class='card'>
+                        <div class='card-body'>
+                            <h4 class='card-title'>
+                                New event - how to build secure software - coming up!
+                            </h4>
+                            <p class='card-text'>
+                                Cyber Security Forum is arranging new event about how to build
+                                web applications that will stand the test of time!
+                            </p>
+                            <a th:href="@{/form}">To the sign up!</a>
+                        </div>
+                    </div>
+                </div>
+                <div class='col-8'>
+                    <div class='card'>
+                        <div class='card-body'>
+                            <h4 class='card-title'>
+                                New event - how to build secure software - coming up!
+                            </h4>
+                            <p class='card-text'>
+                                Cyber Security Forum is arranging new event about how to build
+                                web applications that will stand the test of time!
+                            </p>
+                            <a th:href="@{/form}">To the sign up!</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div th:replace='fragments/footer :: footer'></div>
+        <div th:replace="fragments/footer :: enableBootstrapJavascript" th:remove="tag"></div>
     </body>
 </html>

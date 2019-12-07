@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/security/tags">
-    <head>
-        <title>Signees</title>
+    <head th:replace="fragments/head :: head(title='Participants')">
+        <meta charset="UTF-8" />
+        <title>Title</title>
     </head>
-    <body style="text-align: center">
+    <body>
         <nav th:replace="fragments/navigation :: navbar"></nav>
-        <h1>Signed for the Annual Cyber Security Forum:</h1>
-
-        <ul>
-            <li th:each="person : ${participants}">
-                <span th:text="${person.name}">name</span>
-                <span th:text="${person.address}">name</span>
-            </li>
-        </ul>
         
+        <div class='container-fluid text-center'>
+            <div th:replace="fragments/title :: title(text='Participants')"></div>
+        
+            <div class='card'>
+                <ul class='list-group list-group-flush'>
+                    <li class="list-group-item" th:each="person : ${participants}">
+                        <span th:text="${person.name + ', ' + person.address}">name</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div th:replace="fragments/footer :: enableBootstrapJavascript" th:remove="tag"></div>
     </body>
 </html>

@@ -1,14 +1,33 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/security/tags">
-    <head>
-        <title>User profile</title>
+    <head th:replace="fragments/head :: head(title='Profile')">
+        <meta charset="UTF-8" />
+        <title>Title</title>
     </head>
-    <body style="text-align: center">
+    <body>
         <nav th:replace="fragments/navigation :: navbar"></nav>
-
-        <h1 th:text="${user.name + ' ''s profile'}">Profile</h1>
-        <p th:text="${'Username: ' + user.username}">Username</p>
-        <p>Other sensitive information, maybe address and stuff?</p>
+        <div class='container-fluid text-center'>
+            <div th:replace="fragments/title :: title(text=${user.name + ' ''s profile'})"></div>
+            
+            <div class="row">
+                <div class="col d-flex justify-content-center">
+                    <nav class="navbar">
+                        <a class="nav-link disabled" th:href="@{/}">Your events</a>
+                        <a class="nav-link disabled" th:href="@{/}">Change password</a>
+                        <a class="nav-link disabled" th:href="@{/}">Delete account</a>
+                    </nav>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col maincolumn'>
+                    <p>
+                        This is your profile page, which contains some sensitive information
+                        such as your username, email, etc. This should be only visible to YOU.
+                    </p>
+                </div>
+            </div>
+        </div>
         
+        <div th:replace="fragments/footer :: enableBootstrapJavascript" th:remove="tag"></div>
     </body>
 </html>

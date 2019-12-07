@@ -8,42 +8,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import sec.project.domain.Account;
-import sec.project.domain.Signup;
-import sec.project.repository.AccountRepository;
-import sec.project.repository.SignupRepository;
+import sec.project.service.AccountService;
+import sec.project.service.SignupService;
 
 @Controller
 public class SignupController {
 
     @Autowired
-    private SignupRepository signupRepository;
-
+    private SignupService signupService;
+    
     @Autowired
-    private AccountRepository accountRepository;
-
+    private AccountService accountService;
+    
     @RequestMapping(value = "/form", method = RequestMethod.GET)
-    public String loadForm() {
+    public String loadSignForm() {
         return "form";
     }
     
-    @RequestMapping(value = "/done", method = RequestMethod.GET)
-    public String done() {
-        return "done";
-    }
-
     @RequestMapping(value = "/signs", method = RequestMethod.GET)
-    public String loadSignees(Model model) {
-        model.addAttribute("participants", signupRepository.findAll());
+    public String loadParticipants(Model model) {
+        model.addAttribute("participants", signupService.getParticipants());
         return "signs";
     }
     
     @RequestMapping(value = "/form", method = RequestMethod.POST)
-    public String submitForm(Authentication authentication, @RequestParam String name, @RequestParam String address) {
-        Account account = accountRepository.findByUsername(authentication.getName());
+    public String submitSignForm(Authentication authentication, @RequestParam String name, @RequestParam String address) {
+        Account account = accountService.getUser(authentication.getName());
         if (account == null) {
             return "redirect:/login";
         }
-        signupRepository.save(new Signup(name, address, account));
+        signupService.signupToEvent(name, address, account);
         return "redirect:/done";
     }
 }

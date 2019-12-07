@@ -1,24 +1,44 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/security/tags">
-    <head>
-        <title>Login</title>
+    <head th:replace="fragments/head :: head(title='Login')">
+        <meta charset="UTF-8" />
+        <title>Title</title>
     </head>
-    <body style="text-align: center">
-
-        <h1>Login to Cyber Security Forum</h1>
-
-        <form action="#" th:action="@{/login}" method="POST">
-            <p th:if="${param.error}">Invalid username or password</p>
-            <p th:if="${param.logout}">You have been logged out ...</p>
-            <p><input type="text" autofocus="true" name="username" placeholder="Username"/></p>
-            <p><input type="password" name="password" placeholder="Password"/></p>
-            <p><input name="submit" type="submit" value="Login" /></p>
-        </form>
+    <body>
+        <div class='container-fluid text-center'>
+            <div th:replace="fragments/title :: title(text='Login to Cyber Security Forum')"></div>
+            
+            <div class='row'>
+                <div class='col maincolumn'>
+                    <form class="justify-content-center" action="#" th:action="@{/login}" method="POST">
+                        <div class="form-group">
+                            <p class="error" th:if="${param.error}">Invalid username or password</p>
+                            <p class="success" th:if="${param.logout}">You have been logged out ...</p>
+                        </div>
+                        <div class="form-group row">
+                            <label>Username: </label>
+                            <input class="form-control p-2" type="text" autofocus="true" name="username" placeholder="Username"/>
+                        </div>
+                        <div class="form-group row">
+                            <label>Password: </label>
+                            <input class="form-control p-2" type="password" name="password" placeholder="Password"/>
+                        </div>
+                        <div class="form-group row">
+                            <input class="form-control p-2 mt-4" name="submit" type="submit" value="Login" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col text-center'>
+                     <small>
+                         Not yet a member? 
+                         <a th:href="@{/register}">Register</a>
+                     </small>
+                </div>
+            </div>
+        </div>
         
-        <h1>... Or create and account:</h1>
-        
-        <a th:href="@{/register}">Register</a>
-        
-        
+        <div th:replace="fragments/footer :: enableBootstrapJavascript" th:remove="tag"></div>
     </body>
 </html>
