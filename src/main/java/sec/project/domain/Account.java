@@ -6,7 +6,7 @@ import java.util.List;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,9 +18,13 @@ public class Account extends AbstractPersistable<Long> {
     private String username;
     private String password;
     
-    @OneToOne
-    private Signup signup;
+    @OneToMany(mappedBy = "account")
+    private List<Order> orders = new ArrayList<>();
     
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> authorities = new ArrayList<>();
+    
+    public void addOrder(Order order) {
+        this.orders.add(order);
+    }
 }

@@ -8,9 +8,10 @@
         <nav th:replace="fragments/navigation :: navbar"></nav>
         
         <div class='container-fluid text-center'>
-            <div th:replace="fragments/title :: title(text='Thank you for signin in')"></div>
+            <div th:replace="fragments/title :: title(text='Thank you for your order')"></div>
         </div>
         
+        <div th:replace='fragments/footer :: footer'></div>
         <div th:replace="fragments/footer :: enableBootstrapJavascript" th:remove="tag"></div>
     </body>
 </html>

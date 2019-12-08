@@ -7,35 +7,94 @@
     <body>
         <nav th:replace="fragments/navigation :: navbar"></nav>
         
-        <div class='container-fluid text-center'>
+        <div class='container-fluid'>
             <div th:replace="fragments/title :: title(text='Welcome to the Cyber Security forum!')"></div>
         
             <div class='row'>
-                <div class='col-4'>
-                    <div class='card'>
+                <div class='col-12 col-md-4'>
+                    <h2 class="text-center">NEWS</h2>
+                    <div class='card m-2'>
                         <div class='card-body'>
                             <h4 class='card-title'>
-                                New event - how to build secure software - coming up!
+                                Cats empathy
                             </h4>
                             <p class='card-text'>
-                                Cyber Security Forum is arranging new event about how to build
-                                web applications that will stand the test of time!
+                                Recent studies show that cats has no empathy towards a man.
+                                Scientists were able to prove that cat didn't feel any remorse
+                                after peeing in masters bedroom. Better yet, cat's usually ...
                             </p>
-                            <a th:href="@{/form}">To the sign up!</a>
+                        </div>
+                    </div>
+                    <div class='card m-2'>
+                        <div class='card-body'>
+                            <h4 class='card-title'>
+                                Christmas chocolate - appropriate amount?
+                            </h4>
+                            <p class='card-text'>
+                                We are asking our readers, what is an appropriate amount
+                                of christmas chocolate? Or is it even possible to eat too much?
+                                Are you a fan of the green marbles, or do you fancy Panda's
+                                traditionels? Tell us wha ...
+                            </p>
                         </div>
                     </div>
                 </div>
-                <div class='col-8'>
-                    <div class='card'>
+                <div class='col-12 col-md-8'>
+                    <h2 class='text-center'>POSTS</h2>
+                    <div class='card m-2'>
                         <div class='card-body'>
-                            <h4 class='card-title'>
-                                New event - how to build secure software - coming up!
-                            </h4>
+                            <h3 class='card-title'>
+                                Order our book
+                            </h3>
+                            <h6 class="text-muted">
+                                by Miika Somero, December 8, 2019
+                            </h6>
                             <p class='card-text'>
-                                Cyber Security Forum is arranging new event about how to build
-                                web applications that will stand the test of time!
+                                Cyber Security Forum is printing a book on how to build secure
+                                web applications. Book introduces to the most common security
+                                vulnerabilities and how to avoid them. Nearly four hundred pages
+                                covers the topics from server-side to client-side flaws and ...
                             </p>
-                            <a th:href="@{/form}">To the sign up!</a>
+                            <a th:href="@{/order}">Order</a>
+                        </div>
+                    </div>
+                    <div class='card m-2'>
+                        <div class='card-body'>
+                            <h3 class='card-title'>
+                                OWASP Top Ten Most Critical Web Application Security Risks
+                            </h3>
+                            <h6 class='text-muted'>
+                                by Miika Somero, December 7, 2019
+                            </h6>
+                            <p class='card-text'>
+                                OWASP has yet again released new top ten most critical security
+                                risks on web applications. Previous list is from 2013 and as the
+                                report shows, only little has changed since that. 
+                            </p>
+                            <a th:href="@{https://www.owasp.org/images/7/72/OWASP_Top_10-2017_%28en%29.pdf.pdf}">OWASP Top 10</a>
+                        </div>
+                    </div>
+                    <div class='card m-2'>
+                        <div class='card-body'>
+                            <h3 class='card-title'>
+                                New Cyber Security course starting
+                            </h3>
+                            <h6 class='text-muted'>
+                                by Miika Somero, December 5, 2019
+                            </h6>
+                            <blockquote class='card-text'>
+                                <a th:href="@{https://cybersecuritybase.mooc.fi/}">Cyber Security Base</a> is
+                                a free course series by University of Helsinki and MOOC.fi in collaboration
+                                with F-Secure that focuses on building
+                                core knowledge and abilities related to the work of a cyber security
+                                professional. Learn about tools used to analyse flaws in software systems,
+                                necessary knowledge to build secure software systems (esp. within Web),
+                                the skills needed to perform risk and threat analysis on existing systems
+                                and the relevant legislation within EU.
+                            </blockquote>
+                            <footer class="blockquote-footer">
+                                Cyber Security Base
+                            </footer>
                         </div>
                     </div>
                 </div>

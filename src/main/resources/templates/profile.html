@@ -12,7 +12,7 @@
             <div class="row">
                 <div class="col d-flex justify-content-center">
                     <nav class="navbar">
-                        <a class="nav-link disabled" th:href="@{/}">Your events</a>
+                        <a class="nav-link disabled" th:href="@{/}">Your orders</a>
                         <a class="nav-link disabled" th:href="@{/}">Change password</a>
                         <a class="nav-link disabled" th:href="@{/}">Delete account</a>
                     </nav>
@@ -28,6 +28,7 @@
             </div>
         </div>
         
+        <div th:replace='fragments/footer :: footer'></div>
         <div th:replace="fragments/footer :: enableBootstrapJavascript" th:remove="tag"></div>
     </body>
 </html>

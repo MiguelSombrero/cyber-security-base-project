@@ -2,13 +2,34 @@
 
 Link to [repository](https://github.com/MiguelSombrero/cyber-security-base-project)
 
-## Flaw 1 - Cross Site Scripting
-
-**MUISTIINPANO - POISTA: jätä lomakedata validoimatta/sanitoimatta asiakkaan ja serverin päässä, joka mahdollistaa CSS hyökkäyksen.**
+## Flaw 1 - Injection
 
 ### Description
 
+In the application, user-supplied data is validated by client-side form. In every input field there is minimum and maximum length of the input, as well as boolean attribute is it required or not. For example Username field in the login-page looks like this:
+
+    <input class="form-control p-2" type="text" autofocus="true" name="username" placeholder="Username" minlength="1" maxlength="20" required/>
+
+However, validation is only performed at client, not in the server. Malicious user could bypass client-side validation and make request directly to the server. Since there is no validation of user input at the server, this could allow attacker to inject malicious code to server.
+
 ### Steps to fix
+
+Always validate user-supplied data on server. When creating Java domain objects, use annotations to specify the constraints of the attributes. These annotations can be found from package *javax.validation.constraints*. For example, in our applications Account class attributes could be annotated like this
+
+    @NotNull
+    @Size(min = 1, max = 20)
+    private String name;
+
+    @NotNull
+    @Size(min = 5, max = 20)
+    private String username;
+
+    @NotNull
+    @Size(min = 8, max = 20)
+    private String password;
+
+Since Account class is also annotated as @Entity, these constraints would apply also in the database created. Validations should be made in controller which takes care of ...
+
 
 ## Flaw 2 - Using components with known vulnerabilities
 

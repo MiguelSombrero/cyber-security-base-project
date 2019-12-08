@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sec.project.domain.Account;
-import sec.project.domain.Signup;
+import sec.project.domain.Order;
 import sec.project.repository.AccountRepository;
-import sec.project.repository.SignupRepository;
+import sec.project.repository.OrderRepository;
 
 /**
  *
@@ -15,19 +15,19 @@ import sec.project.repository.SignupRepository;
  */
 
 @Service
-public class SignupService {
+public class OrderService {
     
     @Autowired
-    private SignupRepository signupRepository;
+    private OrderRepository orderRepository;
 
     @Autowired
     private AccountRepository accountRepository;
 
-    public List<Signup> getParticipants() {
-        return signupRepository.findAll();
+    public List<Order> getOrders() {
+        return orderRepository.findAll();
     }
     
-    public void signupToEvent(String name, String address, Account account) {
-        signupRepository.save(new Signup(name, address, account));
+    public void placeOrder(String name, String address, Account account) {
+        orderRepository.save(new Order(name, address, account));
     }
 }

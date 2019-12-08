@@ -1,19 +1,21 @@
 package sec.project.domain;
 
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
+@Table(name = "PRODUCT_ORDER")
 @Data @Entity @AllArgsConstructor @NoArgsConstructor
-public class Signup extends AbstractPersistable<Long> {
+public class Order extends AbstractPersistable<Long> {
 
     private String name;
     private String address;
 
-    @OneToOne
+    @ManyToOne
     private Account account;
     
 }
