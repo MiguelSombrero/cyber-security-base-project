@@ -4,10 +4,12 @@ package sec.project.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import sec.project.domain.Account;
 import sec.project.service.AccountService;
 
 @Controller
@@ -27,8 +29,8 @@ public class AccountController {
     }
     
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String registerUser(@RequestParam String name, @RequestParam String username, @RequestParam String password) {
-        accountService.registerUser(name, username, password);
+    public String registerUser(@ModelAttribute Account account) {
+        accountService.registerUser(account);
         return "redirect:/login";
     }
     

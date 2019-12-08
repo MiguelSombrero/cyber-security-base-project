@@ -23,15 +23,9 @@ public class AccountService {
     @Autowired
     PasswordEncoder encoder;
     
-    public void registerUser(String name, String username, String password) {
-        List<String> authorities = new ArrayList<>();
-        Account account = new Account();
-        
-        authorities.add("USER");
-        account.setName(name);
-        account.setUsername(username);
-        account.setPassword(encoder.encode(password));
-        account.setAuthorities(authorities);
+    public void registerUser(Account account) {
+        account.addAuthority("USER");
+        account.setPassword(encoder.encode(account.getPassword()));
         
         accountRepository.save(account);
     }

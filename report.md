@@ -28,10 +28,41 @@ Always validate user-supplied data on server. When creating Java domain objects,
     @Size(min = 8, max = 20)
     private String password;
 
-Since Account class is also annotated as @Entity, these constraints would apply also in the database created. Validations should be made in controller which takes care of ...
+Since Account class is also annotated as @Entity, these constraints would apply also in the database when created. Validations can be made with @Valid annotation, in controller which takes care of creating the user. Fixed method could look something like this
+
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public String registerUser(@Valid @ModelAttribute Account account, BindingResult result) {
+        if (result.hasErrors()) {
+            return "register";
+        }
+        accountService.registerUser(account);
+        return "redirect:/login";
+    }
+
+Validations has to be made in all methods, which are responsible for persisting user-supplied data.
+
+## Flaw 2 - Cross-site Scripting (XSS)
+
+### Description
+
+Application is using Thymeleaf for creating Java templates. Thymeleaf is escaping all the data coming from the server by default. However, one fragment in title.html is using *th:utext* instead of *th:text*.
+
+    <div th:fragment="title(text)" class='row'>
+        <div class='col jumbotron text-center mt-2'>
+            <h1 th:utext="${text}">Title</h1>
+        </div>
+    </div>
+
+While *th:text* expression escapes input, *th:utext* doesn't. This means that if attacker has managed to inject malicious code into the server, coming now back to user, browser would execute it as it is. Attacker might, for example, be able to sniff users session id by command
+
+    <script>alert(document.cookie);</script>
+
+### Steps to fix
+
+Always escape and sanitize user-supplied data. In this example it would have been sufficient fix just to use th:text instead of th:utext. Of course, this has to be done manually when not using template engines and frameworks which does this for you.
 
 
-## Flaw 2 - Using components with known vulnerabilities
+## Flaw 3 - Using components with known vulnerabilities
 
 **MUISTIINPANO - POISTA: Määritä jonkin käytetyn lisäosan versionumero pom.xml tiedostossa siten, että versio on vanha ja sisältää haavoittuvuuksia.**
 
@@ -39,7 +70,7 @@ Since Account class is also annotated as @Entity, these constraints would apply 
 
 ### Steps to fix
 
-## Flaw 3 - Broken access control
+## Flaw 4 - Broken access control
 
 **MUISTIINPANO - POISTA: Jätä security configuraatiossa määrittelemättä mitä sivuja voi avata kirjautumatta järjestelmään. Lisää järjestelmään jokin toiminta, jonka vain kirjatunut käyttäjä saa mähdä.**
 
@@ -47,7 +78,7 @@ Since Account class is also annotated as @Entity, these constraints would apply 
 
 ### Steps to fix
 
-## Flaw 4 - Security misconfiguration
+## Flaw 5 - Security misconfiguration
 
 **MUISTIINPANO - POISTA: tee jokin selvästi huono tietoturvakonfigurointi, joka mahdollistaa hyökkäyksen. Disabloi esimerkiksi csrf-hyökkäyksen esto tai cookies httpOnly.**
 
@@ -55,7 +86,7 @@ Since Account class is also annotated as @Entity, these constraints would apply 
 
 ### Steps to fix
 
-## Flaw 5 - Sensitive data exposure
+## Flaw 6 - Sensitive data exposure
 
 **MUISTIINPANO - POISTA: Käyttäjän profiilisivulle pääsee syöttämällä suoraan osoitekenttää /profile/{username}.. Profiilisivulla on tietoa, joka saa näkyä vain käyttäjälle.**
 

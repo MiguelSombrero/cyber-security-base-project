@@ -24,7 +24,7 @@ public class Account extends AbstractPersistable<Long> {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> authorities = new ArrayList<>();
     
-    public void addOrder(Order order) {
-        this.orders.add(order);
+    public void addAuthority(String authority) {
+        this.authorities.add(authority);
     }
 }
