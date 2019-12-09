@@ -41,23 +41,8 @@
                 </div>
                 <div class='col-12 col-md-8'>
                     <h2 class='text-center'>POSTS</h2>
-                    <div class='card m-2'>
-                        <div class='card-body'>
-                            <h3 class='card-title'>
-                                Order our book
-                            </h3>
-                            <h6 class="text-muted">
-                                by Miika Somero, December 8, 2019
-                            </h6>
-                            <p class='card-text'>
-                                Cyber Security Forum is printing a book on how to build secure
-                                web applications. Book introduces to the most common security
-                                vulnerabilities and how to avoid them. Nearly four hundred pages
-                                covers the topics from server-side to client-side flaws and ...
-                            </p>
-                            <a th:href="@{/order}">Order</a>
-                        </div>
-                    </div>
+                    <div th:replace="fragments/posts :: posts(posts=${posts})"></div>
+
                     <div class='card m-2'>
                         <div class='card-body'>
                             <h3 class='card-title'>

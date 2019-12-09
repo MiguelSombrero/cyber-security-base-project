@@ -15,7 +15,12 @@
             <div class="collapse navbar-collapse justify-content-end" id="menubutton">
                 <ul sec:authorize="isAuthenticated()" class="navbar-nav">
                     <li class="navbar-item">
-                        <a class="nav-link" th:href="@{/profile/{username}(username=${#authentication.principal.username})}">Profile</a>
+                        <a class="nav-link" th:href="@{/post}">Write post</a>
+                    </li>
+                </ul>
+                <ul sec:authorize="isAuthenticated()" class="navbar-nav">
+                    <li class="navbar-item">
+                        <a class="nav-link" th:href="@{/users/{username}(username=${#authentication.principal.username})}">Profile</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav">

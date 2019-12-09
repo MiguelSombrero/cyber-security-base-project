@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/security/tags">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Frontpage</title>
+    </head>
+    <body>
+        <div th:fragment="posts(posts)" th:each='post : ${posts}' class='card m-2'>
+            <div class='card-body'>
+                <h3 th:text="${post.title}" class='card-title'>Title</h3>
+                <h6 th:text="${'by ' + post.author.name + ', ' + #temporals.monthName(post.created) + ' ' + #temporals.day(post.created) + ', ' + #temporals.year(post.created)}" class='text-muted'>by</h6>
+                <p th:text="${post.content}" class='card-text'>Content</p>
+                
+                <div th:if="${#authentication.principal.username == post.author.username}" class="form-group row justify-content-end">
+                    <form action="#" th:action="@{/posts/{id}(id=${post.id})}" th:method="DELETE">
+                        <input class="form-control p-2 mt-4" name="submit" type="submit" value="Delete post" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

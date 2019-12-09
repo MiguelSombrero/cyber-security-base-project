@@ -10,20 +10,12 @@ public class DefaultController {
 
     @RequestMapping("*")
     public String defaultMapping() {
-        return "index";
+        return "redirect:/posts";
     }
     
-    @RequestMapping(value = "/done", method = RequestMethod.GET)
-    public String done() {
-        return "done";
-    }
-
     @RequestMapping(value = "/about", method = RequestMethod.GET)
     public String about() {
         return "about";
     }
-
-    
-    
 }
 

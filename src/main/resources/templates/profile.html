@@ -12,7 +12,6 @@
             <div class="row">
                 <div class="col d-flex justify-content-center">
                     <nav class="navbar">
-                        <a class="nav-link disabled" th:href="@{/}">Your orders</a>
                         <a class="nav-link disabled" th:href="@{/}">Change password</a>
                         <a class="nav-link disabled" th:href="@{/}">Delete account</a>
                     </nav>
@@ -24,6 +23,12 @@
                         This is your profile page, which contains some sensitive information
                         such as your username, email, etc. This should be only visible to YOU.
                     </p>
+                </div>
+            </div>
+             <div class='row'>
+                <div class='col maincolumn'>
+                    <h2>YOUR POSTS</h2>
+                    <div th:replace="fragments/posts :: posts(posts=${user.posts})"></div>
                 </div>
             </div>
         </div>

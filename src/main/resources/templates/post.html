@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/security/tags">
-    <head th:replace="fragments/head :: head(title='Sign up')">
+    <head th:replace="fragments/head :: head(title='Post')">
         <meta charset="UTF-8" />
         <title>Title</title>
     </head>
@@ -8,21 +8,21 @@
         <nav th:replace="fragments/navigation :: navbar"></nav>
         
         <div class='container-fluid text-center'>
-            <div th:replace="fragments/title :: title(text='Cyber Shop')"></div>
-            <h2>Order our newest book: "Cyber Security Base - Is not Byber Becurity Case"</h2>
+            <div th:replace="fragments/title :: title(text='Write a story to Cyber Security Forum')"></div>
+            
             <div class='row'>
                 <div class='col maincolumn'>
-                    <form class="justify-content-center" action="#" th:action="@{/order}" method="POST">
+                    <form class="justify-content-center" action="#" th:action="@{/posts}" method="POST">
                         <div class="form-group row">
-                            <label>Name: </label>
-                            <input class="form-control p-2" type="text" autofocus="true" name="name" placeholder="Name of recipient" minlength="1" maxlength="20" required/>
+                            <label>Title: </label>
+                            <input class="form-control p-2" type="text" autofocus="true" name="title" placeholder="A title of your post" minlength="1" maxlength="50" required></input>
                         </div>
                         <div class="form-group row">
-                            <label>Billing address: </label>
-                            <input class="form-control p-2" type="text" name="address" placeholder="Billing address" minlength="1" maxlength="100" required/>
+                            <label>Content: </label>
+                            <textarea class="form-control p-2" style="height: 300px" name="content" placeholder="This is the place for your story" minlength="1" maxlength="5000" required></textarea>
                         </div>
                         <div class="form-group row">
-                            <input class="form-control p-2 mt-4" name="submit" type="submit" value="Order" />
+                            <input class="form-control p-2 mt-4" name="submit" type="submit" value="Post" />
                         </div>
                     </form>
                 </div>
