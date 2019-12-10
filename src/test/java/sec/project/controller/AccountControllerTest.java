@@ -1,6 +1,8 @@
 
 package sec.project.controller;
 
+import javax.annotation.Resource;
+import javax.servlet.Filter;
 import javax.transaction.Transactional;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
@@ -11,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -36,11 +40,13 @@ import sec.project.repository.AccountRepository;
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@AutoConfigureMockMvc
 public class AccountControllerTest {
     
     @Autowired
     private AccountRepository accountRepository;
+    
+    @Autowired
+    private PasswordEncoder encoder;
     
     @Autowired
     private TestUtils utils;
@@ -48,15 +54,18 @@ public class AccountControllerTest {
     @Autowired
     private WebApplicationContext webAppContext;
 
+    @Resource
+    private Filter springSecurityFilterChain;
+
     private MockMvc mock;
 
     @Before
     public void setUp() {
-        this.mock = MockMvcBuilders.webAppContextSetup(webAppContext).build();
+        this.mock = MockMvcBuilders.webAppContextSetup(webAppContext).addFilters(springSecurityFilterChain).build();
         
         Account account = new Account();
         account.setUsername("miika");
-        account.setPassword("miika");
+        account.setPassword(encoder.encode("miika"));
         account.setName("Miika Somero");
         accountRepository.save(account);
     }
@@ -74,7 +83,6 @@ public class AccountControllerTest {
         MvcResult result = mock.perform(post("/login")
                 .param("username", "miika")
                 .param("password", "miika"))
-                .andExpect(model().hasNoErrors())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/posts"))
                 .andReturn();
@@ -83,12 +91,13 @@ public class AccountControllerTest {
     @Test
     public void cannotLoginWithUnexistingAccount() throws Exception {
         // how to test that login was unsuccesfull?
+        // gives now status 302, not 401
         
         MvcResult result = mock.perform(post("/login")
                 .param("username", "nobody")
                 .param("password", "miika"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/posts"))
+                .andExpect(status().is(401))
+                .andExpect(redirectedUrl("/login?error"))
                 .andReturn();
     }
     
