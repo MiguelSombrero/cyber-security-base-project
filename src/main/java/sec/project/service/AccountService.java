@@ -36,4 +36,8 @@ public class AccountService {
     public void deleteUser(Long id) {
         accountRepository.deleteById(id);
     }
+    
+    public boolean accountIsUnique(String username) {
+        return accountRepository.findByUsername(username) == null;
+    }
 }

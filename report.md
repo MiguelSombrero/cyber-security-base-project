@@ -89,7 +89,7 @@ You can view your own profile in profile-page (Navigation bar > Profile) when yo
 
 ### Steps to fix
 
-Create routers (controller) in such way, that they are not vulnerable to parameter tampering. Use long random parameters in path variables. Fixed getUserProfile() method could look like this
+Create routers (controller) in such way, that they are not vulnerable to parameter tampering. Use long random parameters in path variables. Also verify that user is authorized to make request. Fixed getUserProfile() method could look like this
 
     @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
     public String getUserProfile(Model model, Authentication authentication, @PathVariable Long id) {

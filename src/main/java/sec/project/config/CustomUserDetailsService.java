@@ -23,18 +23,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     PasswordEncoder encoder;
     
-    @PostConstruct
-    private void init() {
-        Account admin = new Account();
-        admin.setName("admin");
-        admin.setUsername("admin");
-        admin.setPassword(encoder.encode("admin"));
-        List<String> authorities = new ArrayList<>();
-        authorities.add("ADMIN");
-        admin.setAuthorities(authorities);
-        accountRepository.save(admin);
-    }
-    
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Account account = accountRepository.findByUsername(username);
