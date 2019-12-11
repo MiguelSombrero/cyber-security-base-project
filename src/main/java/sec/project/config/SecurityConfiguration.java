@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -33,12 +32,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/h2-console", "/h2-console/**").permitAll()
                 .anyRequest().authenticated().and()
             .formLogin()
-                .failureHandler(customAuthenticationFailureHandler())
                 .loginPage("/login")
                 .defaultSuccessUrl("/posts")
                 .permitAll().and()
             .logout()
-                .clearAuthentication(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll();
         
@@ -49,11 +46,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
     
-    @Bean
-    public AuthenticationFailureHandler customAuthenticationFailureHandler() {
-        return new CustomAuthenticationFailureHandler();
-    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

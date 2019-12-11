@@ -14,7 +14,7 @@ Malicious user could bypass client-side validation and make request directly to 
 
 ### Steps to fix
 
-Always validate user-supplied data on server. When creating Java domain objects, use annotations to specify the constraints of the attributes. These annotations can be found from package *javax.validation.constraints*. For example, in our applications Post class attributes could be annotated like this
+Always validate and sanitize user-supplied data on server. When creating Java domain objects, use annotations to specify the constraints of the attributes. These annotations can be found from package *javax.validation.constraints*. For example, in our applications Post class attributes could be annotated like this
 
     private LocalDateTime created;
 
@@ -41,7 +41,7 @@ Note that attribute *created* is set on the server and is not user-input. Since 
         return "redirect:/posts";
     }
 
-Validations has to be made in all methods, which are responsible for persisting user-supplied data.
+Also, don't forget to sanitize extra whitespaces on input. Validations has to be made in all methods, which are responsible for persisting user-supplied data.
 
 ## Flaw 2 - Cross-site Scripting (XSS)
 
@@ -81,7 +81,7 @@ Do not disable security settings in order to debug application. If you have to, 
 
     @Profile("test")
 
-## Flaw 4 - Sensitive data exposure
+## Flaw 4 - Broken access control
 
 ### Description
 
@@ -89,7 +89,7 @@ You can view your own profile in profile-page (Navigation bar > Profile) when yo
 
 ### Steps to fix
 
-Create routers (controller) in such way, that they are not vulnerable to parameter tampering. Use long random parameters in path variables. Also verify that user is authorized to make request. Fixed getUserProfile() method could look like this
+Create routers (controller) in such way, that they are not vulnerable to parameter tampering. Use long random parameters in path variables. In this case, it wouldn't be necessary even to use {parameter} in the path, since we are always requesting logged users profile. At least, always verify that user is authorized to make request. Fixed getUserProfile() method could look like this
 
     @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
     public String getUserProfile(Model model, Authentication authentication, @PathVariable Long id) {
@@ -101,14 +101,23 @@ Create routers (controller) in such way, that they are not vulnerable to paramet
         return "profile";
     }
 
-This is also an example of broken access control flaw.
+This is also an example of Sensitive data exposure, if user profile is containing sensitive information about user. All personal data, such as full name, email, address etc. should be considered sensitive and not show anyone else without permission.
 
-## Flaw 5 - Broken access control
+There is also broken access control flaw in the deleteUser() and deletePost() methods; anyone could delete any user or post, if knowing it's id. This should be prevented for example in same way as above.
+
+## Flaw 5 - Broken authentication
 
 ### Description
 
-User can delete posts with Delete button, which is rendered only on those posts, for which user is an author. In PostControllers deletePost() method there is no user authorizing. Malicious user could make delete request directly to the server and remove other users posts, if knowing posts id.
+When registering new user, users input is validated in register form and in the server. However, validation constraints are not nearly strict enought. Currently, username have to be between 5-20 and password 5-100 characters. There is no constraints for the passwords format either; one could enter 5 blanks as a password and username. 
 
 ### Steps to fix
 
+In cryptography length is strength. Increase passwords minimum required length at least to 8 characters. Add some constraints for the passwords format and sanitize the user input. With Java validation constraints, you could define those rules with @Pattern annotation, for example
 
+    @NotNull
+    @Size(min = 8, max = 100, message = "Password should be between 5-100 character")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")
+    private String password
+
+Pattern verifies that password is containing at least one number, one lower case and one upper case letter, one special character, contains no white space and is at least 8 characters long ([source](https://stackoverflow.com/questions/3802192/regexp-java-for-password-validation)). You could also create your own custom validator class for more complex checks.

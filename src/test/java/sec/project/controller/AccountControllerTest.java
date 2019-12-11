@@ -11,14 +11,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.FilterChainProxy;
+import org.springframework.security.test.context.support.WithMockUser;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -54,14 +55,14 @@ public class AccountControllerTest {
     @Autowired
     private WebApplicationContext webAppContext;
 
-    @Resource
-    private Filter springSecurityFilterChain;
-
     private MockMvc mock;
 
     @Before
     public void setUp() {
-        this.mock = MockMvcBuilders.webAppContextSetup(webAppContext).addFilters(springSecurityFilterChain).build();
+        this.mock = MockMvcBuilders
+                .webAppContextSetup(webAppContext)
+                .apply(springSecurity())
+                .build();
         
         Account account = new Account();
         account.setUsername("miika");
@@ -90,13 +91,10 @@ public class AccountControllerTest {
     
     @Test
     public void cannotLoginWithUnexistingAccount() throws Exception {
-        // how to test that login was unsuccesfull?
-        // gives now status 302, not 401
-        
         MvcResult result = mock.perform(post("/login")
                 .param("username", "nobody")
                 .param("password", "miika"))
-                .andExpect(status().is(401))
+                .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login?error"))
                 .andReturn();
     }
@@ -229,4 +227,36 @@ public class AccountControllerTest {
         assertEquals(1L, accountRepository.findAll().stream().count());
     }
     
+    @Test
+    @WithMockUser
+    public void canDeleteAccount() throws Exception {
+        Account account = accountRepository.findByUsername("miika");
+        
+        MvcResult result = mock.perform(MockMvcRequestBuilders.delete("/users/" + account.getId()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login"))
+                .andReturn();
+        
+        assertEquals(0L, accountRepository.findAll().stream().count());
+    }
+    
+    // HERE IS THE PLACE TESTS TO TEST THAT USER CANNOT DELETE SOMEONE ELSE
+    // THESE RESTRICTIONS DOES NOT EXIST
+    
+    @Test
+    @WithMockUser("miika")
+    public void getProfilePage() throws Exception {
+        MvcResult result = mock.perform(get("/users/miika"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Miika Somero 's profile")))
+                .andExpect(view().name("profile"))
+                .andExpect(model().attributeExists("user"))
+                .andReturn();
+        
+         Account user = (Account) result.getModelAndView().getModel().get("user");
+         
+         assertEquals("Miika Somero", user.getName());
+         assertEquals("miika", user.getUsername());
+         assertTrue(encoder.matches("miika", user.getPassword()));
+    }
 }
