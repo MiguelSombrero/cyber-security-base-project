@@ -1,8 +1,7 @@
 
 package sec.project.controller;
 
-import javax.annotation.Resource;
-import javax.servlet.Filter;
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
@@ -56,14 +55,16 @@ public class AccountControllerTest {
     private WebApplicationContext webAppContext;
 
     private MockMvc mock;
+    
+    @PostConstruct
+    public void init() {
+        this.mock = MockMvcBuilders.webAppContextSetup(webAppContext)
+                .apply(springSecurity())
+                .build();
+    }
 
     @Before
     public void setUp() {
-        this.mock = MockMvcBuilders
-                .webAppContextSetup(webAppContext)
-                .apply(springSecurity())
-                .build();
-        
         Account account = new Account();
         account.setUsername("miika");
         account.setPassword(encoder.encode("miika"));

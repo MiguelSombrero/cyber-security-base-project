@@ -23,6 +23,11 @@
                         <a class="nav-link" th:href="@{/users/{username}(username=${#authentication.principal.username})}">Profile</a>
                     </li>
                 </ul>
+                <ul sec:authorize="hasRole('ADMIN')" class="navbar-nav">
+                    <li class="navbar-item">
+                        <a class="nav-link" th:href="@{/users}">Users</a>
+                    </li>
+                </ul>
                 <ul class="navbar-nav">
                     <li class="navbar-item">
                         <a class="nav-link" th:href="@{/about}">About</a>
@@ -36,7 +41,7 @@
                 <ul sec:authorize="isAuthenticated()" class="navbar-nav">
                     <li class="navbar-item">
                         <form th:action="@{/logout}" action="#" method="POST">
-                            <input type="submit" value="Logout" class="btn nav-link"></input>
+                            <input id="logoutButton" type="submit" value="Logout" class="btn nav-link"></input>
                         </form>
                     </li>
                 </ul>

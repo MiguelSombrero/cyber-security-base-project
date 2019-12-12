@@ -3,6 +3,8 @@ package sec.project.controller;
 
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,6 +42,13 @@ public class AccountController {
         }
         accountService.registerUser(account);
         return "redirect:/login";
+    }
+    
+    @Secured({"ROLE_ADMIN"})
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    public String getUsers(Model model) {
+        model.addAttribute("users", accountService.getUsers());
+        return "users";
     }
     
     @RequestMapping(value = "/users/{id}", method = RequestMethod.DELETE)

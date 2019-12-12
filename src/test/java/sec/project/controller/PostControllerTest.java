@@ -3,6 +3,7 @@ package sec.project.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.Filter;
 import javax.transaction.Transactional;
@@ -63,13 +64,15 @@ public class PostControllerTest {
     
     private MockMvc mock;
 
-    @Before
-    public void setUp() {
-        this.mock = MockMvcBuilders
-                .webAppContextSetup(webAppContext)
+    @PostConstruct
+    public void init() {
+        this.mock = MockMvcBuilders.webAppContextSetup(webAppContext)
                 .apply(springSecurity())
                 .build();
-        
+    }
+    
+    @Before
+    public void setUp() {
         Account account = new Account();
         account.setUsername("miika");
         account.setPassword(encoder.encode("miika"));

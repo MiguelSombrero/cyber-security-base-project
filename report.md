@@ -101,19 +101,25 @@ Create routers (controller) in such way, that they are not vulnerable to paramet
         return "profile";
     }
 
-This is also an example of Sensitive data exposure, if user profile is containing sensitive information about user. All personal data, such as full name, email, address etc. should be considered sensitive and not show anyone else without permission.
-
 There is also broken access control flaw in the deleteUser() and deletePost() methods; anyone could delete any user or post, if knowing it's id. This should be prevented for example in same way as above.
 
 ## Flaw 5 - Broken authentication
 
 ### Description
 
-When registering new user, users input is validated in register form and in the server. However, validation constraints are not nearly strict enought. Currently, username have to be between 5-20 and password 5-100 characters. There is no constraints for the passwords format either; one could enter 5 blanks as a password and username. 
+There is couple of alarming things on our application concerning authentication. 
+
+#### Default admin username and password
+
+If you look at the SecurityConfiguration class, you notice that application has default username "admin" with password "admin", and that user has ADMIN rights to the application. This user has access to */users* path, which will fetch all the registered users and show their personal information.
+
+#### Too weak validations
+
+User input is validated in register form and in the server. However, validation constraints aren't nearly strict enought. Currently, username have to be between 5-20 and password 5-100 characters. There is no constraints for the passwords format either; one could enter 5 blanks as a password and username. 
 
 ### Steps to fix
 
-In cryptography length is strength. Increase passwords minimum required length at least to 8 characters. Add some constraints for the passwords format and sanitize the user input. With Java validation constraints, you could define those rules with @Pattern annotation, for example
+Change default weak passwords to strong ones. In cryptography length is strength. Increase passwords minimum required length at least to 8 characters. Add some constraints for the passwords format and sanitize the user input. With Java validation constraints, you could define those rules with @Pattern annotation, for example
 
     @NotNull
     @Size(min = 8, max = 100, message = "Password should be between 5-100 character")
@@ -121,3 +127,13 @@ In cryptography length is strength. Increase passwords minimum required length a
     private String password
 
 Pattern verifies that password is containing at least one number, one lower case and one upper case letter, one special character, contains no white space and is at least 8 characters long ([source](https://stackoverflow.com/questions/3802192/regexp-java-for-password-validation)). You could also create your own custom validator class for more complex checks.
+
+## Flaw 6 - Sensitive data exposure
+
+### Description
+
+Flaw #4 and flaw #5 is also an examples of Sensitive data exposure. All personal data, such as full name, email, address etc. should be considered sensitive and should not show to third parties without permission.
+
+### Steps to fix
+
+First, fix broken access control and authentication problems. Also, consider is all this data really necessary for the application? For example, does it have to have feature for fetching all user data? Would it be safer to make these kind of queries with separate program or script?
