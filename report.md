@@ -14,19 +14,7 @@ Malicious user could bypass client-side validation and make request directly to 
 
 ### Steps to fix
 
-Always validate and sanitize user-supplied data on server. When creating Java domain objects, use annotations to specify the constraints of the attributes. These annotations can be found from package *javax.validation.constraints*. For example, in our applications Post class attributes could be annotated like this
-
-    private LocalDateTime created;
-
-    @NotNull
-    @Size(min = 1, max = 50)
-    private String title;
-
-    @NotNull
-    @Size(min = 1, max = 5000)
-    private String content;
-
-Note that attribute *created* is set on the server and is not user-input. Since Post class is annotated as @Entity, these constraints would apply also in the database. Validations can be made with @Valid annotation in controller which takes care of creating the post. Fixed submitPost() method could look something like this
+Always validate and sanitize user-supplied data on server. When creating Java domain objects, use annotations to specify the constraints of the attributes. Since Post class is annotated as @Entity, these constraints apply also in the database. Validations can be made with @Valid annotation in controller which takes care of creating the post. Fixed submitPost() method could look something like this
 
     @RequestMapping(value = "/posts", method = RequestMethod.POST)
     public String submitPost(Authentication authentication, @Valid @ModelAttribute Post post, BindingResult result) {

@@ -12,12 +12,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import sec.project.controller.TestUtils;
-import sec.project.domain.Account;
-import sec.project.repository.AccountRepository;
 
 /**
  *
@@ -32,12 +29,6 @@ public class RegisterViewTest extends org.fluentlenium.adapter.junit.FluentTest 
     
     @LocalServerPort
     private Integer port;
-    
-    @Autowired
-    private AccountRepository accountRepository;
-    
-    @Autowired
-    private PasswordEncoder encoder;
     
     @Autowired
     private TestUtils utils;
@@ -66,72 +57,79 @@ public class RegisterViewTest extends org.fluentlenium.adapter.junit.FluentTest 
     }
     @Test
     public void canRegisterWithValidInput() {
+        long count = utils.getUsers().size();
+        
         find("#username").fill().with("username");
         find("#password").fill().with("password");
         find("#name").fill().with("Miguel");
         find("#registerButton").click();
         
-        Account account = accountRepository.findByUsername("username");
-        
-        assertEquals("username", account.getUsername());
-        assertEquals("Miguel", account.getName());
-        assertTrue(encoder.matches("password", account.getPassword()));
-        
+        assertEquals(count + 1, utils.getUsers().size());
         assertTrue(pageSource().contains("Login to Cyber Security Forum"));
     }
     
     @Test
     public void cannotRegisterWithTooShortNameame() {
+        long count = utils.getUsers().size();
+        
         find("#username").fill().with("username");
         find("#password").fill().with("password");
         find("#name").fill().with("");
         find("#registerButton").click();
         
-        assertEquals(0L, accountRepository.findAll().stream().count());
+        assertEquals(count, utils.getUsers().size());
         assertTrue(pageSource().contains("Name should be between 1-20 character"));
     }
     
     @Test
     public void cannotRegisterWithTooLongName() {
+        long count = utils.getUsers().size();
+        
         find("#username").fill().with("username");
         find("#password").fill().with("password");
         find("#name").fill().with(utils.createStringOfLength(21));
         find("#registerButton").click();
         
-        assertEquals(0L, accountRepository.findAll().stream().count());
+        assertEquals(count, utils.getUsers().size());
         assertTrue(pageSource().contains("Name should be between 1-20 character"));
     }
     
     @Test
     public void cannotRegisterWithTooShortUsername() {
+        long count = utils.getUsers().size();
+        
         find("#username").fill().with("user");
         find("#password").fill().with("password");
         find("#name").fill().with("Miguel");
         find("#registerButton").click();
         
-        assertEquals(0L, accountRepository.findAll().stream().count());
+        assertEquals(count, utils.getUsers().size());
         assertTrue(pageSource().contains("Username should be between 5-20 character"));
     }
     
     @Test
     public void cannotRegisterWithTooLongUsername() {
+        long count = utils.getUsers().size();
+        
         find("#username").fill().with(utils.createStringOfLength(21));
         find("#password").fill().with("password");
         find("#name").fill().with("Miguel");
         find("#registerButton").click();
         
-        assertEquals(0L, accountRepository.findAll().stream().count());
+        assertEquals(count, utils.getUsers().size());
         assertTrue(pageSource().contains("Username should be between 5-20 character"));
     }
     
     @Test
     public void cannotRegisterWithUsernameTaken() {
+        long count = utils.getUsers().size();
+        
         find("#username").fill().with("username");
         find("#password").fill().with("password");
         find("#name").fill().with("Miguel");
         find("#registerButton").click();
         
-        assertEquals(1L, accountRepository.findAll().stream().count());
+        assertEquals(count + 1, utils.getUsers().size());
         
         goTo("http://localhost:" + port + "/register");
         find("#username").fill().with("username");
@@ -139,32 +137,33 @@ public class RegisterViewTest extends org.fluentlenium.adapter.junit.FluentTest 
         find("#name").fill().with("Miguel");
         find("#registerButton").click();
         
-        assertEquals(1L, accountRepository.findAll().stream().count());
+        assertEquals(count + 1, utils.getUsers().size());
         assertTrue(pageSource().contains("username allready taken - please select another one"));
     }
     
-    /*
     @Test
     public void cannotRegisterWithTooShortPassword() {
-        // miksi tämä ei mene läpi? Antaa että yksi henkilö olisi tietokannassa
+        long count = utils.getUsers().size();
+        
         find("#username").fill().with("username");
         find("#password").fill().with("pass");
         find("#name").fill().with("Miguel");
         find("#registerButton").click();
         
-        assertEquals(0L, accountRepository.findAll().stream().count());
+        assertEquals(count, utils.getUsers().size());
         assertTrue(pageSource().contains("Password should be between 5-100 character"));
     }
-    */
     
     @Test
     public void cannotRegisterWithTooLongPassword() {
+        long count = utils.getUsers().size();
+        
         find("#username").fill().with("username");
         find("#password").fill().with(utils.createStringOfLength(101));
         find("#name").fill().with("Miguel");
         find("#registerButton").click();
         
-        assertEquals(0L, accountRepository.findAll().stream().count());
+        assertEquals(count, utils.getUsers().size());
         assertTrue(pageSource().contains("Password should be between 5-100 character"));
     }
 }

@@ -9,10 +9,7 @@ import java.util.concurrent.TimeUnit;
 import javax.transaction.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.fluentlenium.core.hook.wait.Wait;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
@@ -42,9 +39,6 @@ public class LoginPageTest extends org.fluentlenium.adapter.junit.FluentTest {
     private Integer port;
     
     @Autowired
-    private AccountRepository accountRepository;
-    
-    @Autowired
     private PasswordEncoder encoder;
     
     @Autowired
@@ -52,12 +46,7 @@ public class LoginPageTest extends org.fluentlenium.adapter.junit.FluentTest {
     
     @Before
     public void setUp() {
-        Account account = new Account();
-        account.setUsername("miika");
-        account.setPassword(encoder.encode("miika"));
-        account.setName("Miika Somero");
-        accountRepository.save(account);
-        
+        Account account = utils.saveUser("Jukka Roinanen", "jukka", encoder.encode("jukka"));
         goTo("http://localhost:" + port + "/login");
     }
     
@@ -80,8 +69,8 @@ public class LoginPageTest extends org.fluentlenium.adapter.junit.FluentTest {
     
     @Test
     public void canLoginWithValidInput() {
-        find("#username").fill().with("miika");
-        find("#password").fill().with("miika");
+        find("#username").fill().with("jukka");
+        find("#password").fill().with("jukka");
         find("#loginButton").click();
         
         assertTrue(pageSource().contains("Welcome to the Cyber Security forum!"));
@@ -99,12 +88,10 @@ public class LoginPageTest extends org.fluentlenium.adapter.junit.FluentTest {
     
     @Test
     public void canLogoutAfterLogin() {
-        find("#username").fill().with("miika");
-        find("#password").fill().with("miika");
+        find("#username").fill().with("jukka");
+        find("#password").fill().with("jukka");
         find("#loginButton").click();
-        
-        await().atMost(2, TimeUnit.SECONDS);
-        
+        goTo("http://localhost:" + port + "/posts");
         find("#logoutButton").click();
         
         assertTrue(pageSource().contains("You have been logged out ..."));

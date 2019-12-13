@@ -1,6 +1,7 @@
 
 package sec.project.controller;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import static org.hamcrest.Matchers.containsString;
@@ -29,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import sec.project.domain.Account;
-import sec.project.repository.AccountRepository;
 
 /**
  *
@@ -43,13 +43,10 @@ import sec.project.repository.AccountRepository;
 public class AccountControllerTest {
     
     @Autowired
-    private AccountRepository accountRepository;
+    private TestUtils utils;
     
     @Autowired
     private PasswordEncoder encoder;
-    
-    @Autowired
-    private TestUtils utils;
     
     @Autowired
     private WebApplicationContext webAppContext;
@@ -65,11 +62,7 @@ public class AccountControllerTest {
 
     @Before
     public void setUp() {
-        Account account = new Account();
-        account.setUsername("miika");
-        account.setPassword(encoder.encode("miika"));
-        account.setName("Miika Somero");
-        accountRepository.save(account);
+        Account account = utils.saveUser("Jukka Roinanen", "jukka", encoder.encode("jukka"));
     }
     
     @Test
@@ -83,8 +76,8 @@ public class AccountControllerTest {
     @Test
     public void canLoginWithExistingAccount() throws Exception {
         MvcResult result = mock.perform(post("/login")
-                .param("username", "miika")
-                .param("password", "miika"))
+                .param("username", "jukka")
+                .param("password", "jukka"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/posts"))
                 .andReturn();
@@ -110,6 +103,8 @@ public class AccountControllerTest {
     
     @Test
     public void canRegisterNewAccount() throws Exception {
+        long count = utils.getUsers().size();
+        
         MvcResult result = mock.perform(post("/register")
                 .param("username", "username")
                 .param("password", "password")
@@ -119,11 +114,13 @@ public class AccountControllerTest {
                 .andExpect(redirectedUrl("/login"))
                 .andReturn();
         
-        assertEquals(2L, accountRepository.findAll().stream().count());
+        assertEquals(count + 1, utils.getUsers().size());
     }
     
     @Test
     public void cannotRegisterNewAccountWithTooShortUsername() throws Exception {
+        long count = utils.getUsers().size();
+        
         MvcResult result = mock.perform(post("/register")
                 .param("username", "user")
                 .param("password", "password")
@@ -134,11 +131,13 @@ public class AccountControllerTest {
                 .andExpect(view().name("register"))
                 .andReturn();
         
-        assertEquals(1L, accountRepository.findAll().stream().count());
+        assertEquals(count, utils.getUsers().size());
     }
     
     @Test
     public void cannotRegisterNewAccountWithTooShortName() throws Exception {
+        long count = utils.getUsers().size();
+        
         MvcResult result = mock.perform(post("/register")
                 .param("username", "username")
                 .param("password", "password")
@@ -149,11 +148,13 @@ public class AccountControllerTest {
                 .andExpect(view().name("register"))
                 .andReturn();
         
-        assertEquals(1L, accountRepository.findAll().stream().count());
+        assertEquals(count, utils.getUsers().size());
     }
     
     @Test
     public void cannotRegisterNewAccountWithTooShortPassword() throws Exception {
+        long count = utils.getUsers().size();
+        
         MvcResult result = mock.perform(post("/register")
                 .param("username", "username")
                 .param("password", "pass")
@@ -164,12 +165,14 @@ public class AccountControllerTest {
                 .andExpect(view().name("register"))
                 .andReturn();
         
-        assertEquals(1L, accountRepository.findAll().stream().count());
+        assertEquals(count, utils.getUsers().size());
     }
     
     
     @Test
     public void cannotRegisterNewAccountWithTooLongUsername() throws Exception {
+        long count = utils.getUsers().size();
+        
         MvcResult result = mock.perform(post("/register")
                 .param("username", utils.createStringOfLength(21))
                 .param("password", "password")
@@ -180,11 +183,13 @@ public class AccountControllerTest {
                 .andExpect(view().name("register"))
                 .andReturn();
         
-        assertEquals(1L, accountRepository.findAll().stream().count());
+        assertEquals(count, utils.getUsers().size());
     }
     
     @Test
     public void cannotRegisterNewAccountWithTooLongPassword() throws Exception {
+        long count = utils.getUsers().size();
+        
         MvcResult result = mock.perform(post("/register")
                 .param("username", "username")
                 .param("password", utils.createStringOfLength(101))
@@ -195,11 +200,13 @@ public class AccountControllerTest {
                 .andExpect(view().name("register"))
                 .andReturn();
         
-        assertEquals(1L, accountRepository.findAll().stream().count());
+        assertEquals(count, utils.getUsers().size());
     }
     
     @Test
     public void cannotRegisterNewAccountWithTooLongName() throws Exception {
+        long count = utils.getUsers().size();
+        
         MvcResult result = mock.perform(post("/register")
                 .param("username", "username")
                 .param("password", "password")
@@ -210,11 +217,13 @@ public class AccountControllerTest {
                 .andExpect(view().name("register"))
                 .andReturn();
         
-        assertEquals(1L, accountRepository.findAll().stream().count());
+        assertEquals(count, utils.getUsers().size());
     }
     
     @Test
     public void cannotRegisterNewAccountWithUsernameAllreadyTaken() throws Exception {
+        long count = utils.getUsers().size();
+        
         MvcResult result = mock.perform(post("/register")
                 .param("username", "miika")
                 .param("password", "password")
@@ -225,39 +234,38 @@ public class AccountControllerTest {
                 .andExpect(view().name("register"))
                 .andReturn();
         
-        assertEquals(1L, accountRepository.findAll().stream().count());
+        assertEquals(count, utils.getUsers().size());
     }
     
     @Test
     @WithMockUser
     public void canDeleteAccount() throws Exception {
-        Account account = accountRepository.findByUsername("miika");
+        List<Account> users = utils.getUsers();
         
-        MvcResult result = mock.perform(MockMvcRequestBuilders.delete("/users/" + account.getId()))
+        MvcResult result = mock.perform(MockMvcRequestBuilders.delete("/users/" + users.get(0).getId()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"))
                 .andReturn();
         
-        assertEquals(0L, accountRepository.findAll().stream().count());
+        assertEquals(users.size() - 1, utils.getUsers().size());
     }
     
     // HERE IS THE PLACE TESTS TO TEST THAT USER CANNOT DELETE SOMEONE ELSE
     // THESE RESTRICTIONS DOES NOT EXIST
     
     @Test
-    @WithMockUser("miika")
+    @WithMockUser("jukka")
     public void getProfilePage() throws Exception {
-        MvcResult result = mock.perform(get("/users/miika"))
+        MvcResult result = mock.perform(get("/users/jukka"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Miika Somero 's profile")))
+                .andExpect(content().string(containsString("Jukka Roinanen 's profile")))
                 .andExpect(view().name("profile"))
                 .andExpect(model().attributeExists("user"))
                 .andReturn();
         
          Account user = (Account) result.getModelAndView().getModel().get("user");
          
-         assertEquals("Miika Somero", user.getName());
-         assertEquals("miika", user.getUsername());
-         assertTrue(encoder.matches("miika", user.getPassword()));
+         assertEquals("Jukka Roinanen", user.getName());
+         assertEquals("jukka", user.getUsername());
     }
 }

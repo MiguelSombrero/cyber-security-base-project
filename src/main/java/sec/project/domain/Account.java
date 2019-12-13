@@ -30,7 +30,7 @@ public class Account extends AbstractPersistable<Long> {
     @Size(min = 5, max = 100, message = "Password should be between 5-100 character")
     private String password;
     
-    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Post> posts = new ArrayList<>();
     
     @ElementCollection(fetch = FetchType.EAGER)

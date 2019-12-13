@@ -1,14 +1,12 @@
 
 package sec.project.controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.servlet.Filter;
 import javax.transaction.Transactional;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,8 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -36,8 +32,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import sec.project.domain.Account;
 import sec.project.domain.Post;
-import sec.project.repository.AccountRepository;
-import sec.project.repository.PostRepository;
 
 /**
  *
@@ -51,13 +45,10 @@ import sec.project.repository.PostRepository;
 public class PostControllerTest {
     
     @Autowired
-    private AccountRepository accountRepository;
+    private TestUtils utils;
     
     @Autowired
     private PasswordEncoder encoder;
-    
-    @Autowired
-    private PostRepository postRepository;
     
     @Autowired
     private WebApplicationContext webAppContext;
@@ -73,18 +64,8 @@ public class PostControllerTest {
     
     @Before
     public void setUp() {
-        Account account = new Account();
-        account.setUsername("miika");
-        account.setPassword(encoder.encode("miika"));
-        account.setName("Miika Somero");
-        accountRepository.save(account);
-        
-        Post post = new Post();
-        post.setTitle("Title");
-        post.setContent("Content");
-        post.setAuthor(account);
-        post.setCreated(LocalDateTime.now());
-        postRepository.save(post);
+        Account account = utils.saveUser("Jukka Roinanen", "jukka", encoder.encode("jukka"));
+        utils.savePost("Title", "Content", account);
     }
 
     @Test
@@ -115,10 +96,7 @@ public class PostControllerTest {
                 .andReturn();
         
         List<Post> posts = (List) result.getModelAndView().getModel().get("posts");
-        
-        assertEquals("Title", posts.get(0).getTitle());
-        assertEquals("Content", posts.get(0).getContent());
-        assertEquals(posts.get(0).getAuthor(), accountRepository.findByUsername("miika"));
+        assertTrue(posts.size() >= 1);
         
     }
     
@@ -131,8 +109,10 @@ public class PostControllerTest {
     }
     
     @Test
-    @WithMockUser("miika")
+    @WithMockUser("jukka")
     public void canPostWhenAuthenticated() throws Exception {
+        long count = utils.getPosts().size();
+        
         MvcResult result = mock.perform(post("/posts")
                 .param("title", "Story of me life")
                 .param("content", "I was born in 1982"))
@@ -140,7 +120,7 @@ public class PostControllerTest {
                 .andExpect(redirectedUrl("/posts"))
                 .andReturn();
         
-        assertEquals(2L, postRepository.findAll().stream().count());
+        assertEquals(count + 1, utils.getPosts().size());
     }
     
     // HERE SHOULD BE THE TESTS, WHICH TEST THAT POSTING FAILS WHEN VALIDATION OF THE POST FAILS
@@ -149,6 +129,8 @@ public class PostControllerTest {
     @Test
     @WithAnonymousUser
     public void cannotPostWhenNotAuthenticated() throws Exception {
+        long count = utils.getPosts().size();
+        
         MvcResult result = mock.perform(post("/posts")
                 .param("title", "Story of me life")
                 .param("content", "I was born in 1982"))
@@ -156,12 +138,14 @@ public class PostControllerTest {
                 .andExpect(redirectedUrl("http://localhost/login"))
                 .andReturn();
         
-        assertEquals(1L, postRepository.findAll().stream().count());
+        assertEquals(count, utils.getPosts().size());
     }
     
     @Test
     @WithMockUser("nobody")
     public void cannotPostWithUnexistingUser() throws Exception {
+        long count = utils.getPosts().size();
+        
         MvcResult result = mock.perform(post("/posts")
                 .param("title", "Story of me life")
                 .param("content", "I was born in 1982"))
@@ -169,21 +153,20 @@ public class PostControllerTest {
                 .andExpect(redirectedUrl("/login"))
                 .andReturn();
         
-        assertEquals(1L, postRepository.findAll().stream().count());
+        assertEquals(count, utils.getPosts().size());
     }
     
     @Test
     @WithMockUser
     public void canDeletePostsWhenAuthenticated() throws Exception {
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = utils.getPosts();
         
         MvcResult result = mock.perform(MockMvcRequestBuilders.delete("/posts/" + posts.get(0).getId()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/posts"))
                 .andReturn();
         
-        assertEquals(1L, posts.size());
-        assertEquals(0L, postRepository.findAll().stream().count());
+        assertEquals(posts.size() - 1, utils.getPosts().size());
     }
     
     // HERE IS THE PLACE TESTS TO TEST THAT USER CANNOT DELETE SOMEONE ELSES POSTS
@@ -192,14 +175,14 @@ public class PostControllerTest {
     @Test
     @WithAnonymousUser
     public void cannotDeletePostsWhenNotAuthenticated() throws Exception {
-        assertEquals(1L, postRepository.findAll().stream().count());
+        List<Post> posts = utils.getPosts();
         
-        MvcResult result = mock.perform(MockMvcRequestBuilders.delete("/posts/2"))
+        MvcResult result = mock.perform(MockMvcRequestBuilders.delete("/posts/" + posts.get(0).getId()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("http://localhost/login"))
                 .andReturn();
         
-        assertEquals(1L, postRepository.findAll().stream().count());
+        assertEquals(posts.size(), utils.getPosts());
     }
     
 }

@@ -1,7 +1,15 @@
 package sec.project.controller;
 
 
+import java.time.LocalDateTime;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import sec.project.domain.Account;
+import sec.project.domain.Post;
+import sec.project.repository.AccountRepository;
+import sec.project.repository.PostRepository;
 
 
 /**
@@ -9,8 +17,14 @@ import org.springframework.stereotype.Component;
  * @author miika
  */
 
-@Component
+@Component("test-utils")
 public class TestUtils {
+    
+    @Autowired
+    private AccountRepository accountRepository;
+    
+    @Autowired
+    private PostRepository postRepository;
     
     public String createStringOfLength(int length) {
         StringBuilder string = new StringBuilder();
@@ -20,5 +34,30 @@ public class TestUtils {
         }
         
         return string.toString();
+    }
+    
+    public List<Account> getUsers() {
+        return accountRepository.findAll();
+    }
+    
+    public List<Post> getPosts() {
+        return postRepository.findAll();
+    }
+    
+    public Account saveUser(String name, String username, String password) {
+        Account account = new Account();
+        account.setUsername(username);
+        account.setPassword(password);
+        account.setName(name);
+        return accountRepository.save(account);
+    }
+    
+    public void savePost(String title, String content, Account account) {
+        Post post = new Post();
+        post.setTitle(title);
+        post.setContent(content);
+        post.setAuthor(account);
+        post.setCreated(LocalDateTime.now());
+        postRepository.save(post);
     }
 }

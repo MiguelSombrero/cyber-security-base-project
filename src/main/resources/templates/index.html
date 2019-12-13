@@ -18,6 +18,9 @@
                             <h4 class='card-title'>
                                 Cats empathy
                             </h4>
+                            <h6 class='text-muted'>
+                               December 12, 2019
+                            </h6>
                             <p class='card-text'>
                                 Recent studies show that cats have no empathy towards a man.
                                 Scientists were able to prove that cat didn't feel any remorse
@@ -28,44 +31,24 @@
                     <div class='card m-2'>
                         <div class='card-body'>
                             <h4 class='card-title'>
-                                Christmas chocolate - appropriate amount?
-                            </h4>
-                            <p class='card-text'>
-                                We are asking our readers, what is an appropriate amount
-                                of christmas chocolate? Or is it even possible to eat too much?
-                                Are you a fan of the green marbles, or do you fancy Panda's
-                                traditionels? Tell us wha ...
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class='col-12 col-md-8'>
-                    <h2 class='text-center'>POSTS</h2>
-                    <div th:replace="fragments/posts :: posts(posts=${posts})"></div>
-
-                    <div class='card m-2'>
-                        <div class='card-body'>
-                            <h3 class='card-title'>
                                 OWASP Top Ten Most Critical Web Application Security Risks
-                            </h3>
+                            </h4>
                             <h6 class='text-muted'>
-                                by Miika Somero, December 7, 2019
+                               December 10, 2019
                             </h6>
                             <p class='card-text'>
-                                OWASP has yet again released new top ten most critical security
-                                risks on web applications. Previous list is from 2013 and as the
-                                report shows, only little has changed since that. 
+                                OWASP has yet again released new <a th:href="@{https://www.owasp.org/images/7/72/OWASP_Top_10-2017_%28en%29.pdf.pdf}">Top ten most critical security risks</a> on web applications. Previous list is from 2013 and as the
+                                report shows, only little has changed since that.
                             </p>
-                            <a th:href="@{https://www.owasp.org/images/7/72/OWASP_Top_10-2017_%28en%29.pdf.pdf}">OWASP Top 10</a>
                         </div>
                     </div>
                     <div class='card m-2'>
                         <div class='card-body'>
-                            <h3 class='card-title'>
+                            <h4 class='card-title'>
                                 New Cyber Security course starting
-                            </h3>
+                            </h4>
                             <h6 class='text-muted'>
-                                by Miika Somero, December 5, 2019
+                               December 7, 2019
                             </h6>
                             <blockquote class='card-text'>
                                 <a th:href="@{https://cybersecuritybase.mooc.fi/}">Cyber Security Base</a> is
@@ -82,6 +65,10 @@
                             </footer>
                         </div>
                     </div>
+                </div>
+                <div class='col-12 col-md-8'>
+                    <h2 class='text-center'>POSTS</h2>
+                    <div th:replace="fragments/posts :: posts(posts=${posts})"></div>
                 </div>
             </div>
         </div>
