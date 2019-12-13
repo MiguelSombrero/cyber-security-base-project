@@ -6,12 +6,12 @@
     </head>
     <body>
         <nav th:replace="fragments/navigation :: navbar"></nav>
-        <div class='container-fluid text-center'>
+        <div class='container-fluid'>
             <div th:replace="fragments/title :: title(text=${user?.name + ' ''s profile'})"></div>
             
-            <div class="row">
+            <div class="row m-2">
                 <div class="col d-flex justify-content-center">
-                    <nav class="navbar">
+                    <nav class="navbar d-flex justify-content-center">
                         <a class="nav-link disabled" th:href="@{/}">Change password</a>
                         <form th:action="@{/users/{id}(id=${user?.id})}" action="#" method="DELETE">
                             <input type="submit" value="Delete account" class="btn nav-link"></input>
@@ -19,17 +19,24 @@
                     </nav>
                 </div>
             </div>
-            <div class='row'>
-                <div class='col maincolumn'>
-                    <p>
-                        This is your profile page, which contains some sensitive information
-                        such as your username, email, etc. This should be only visible to YOU.
-                    </p>
+            <div class='row m-2'>
+                <div class='col-12 col-md-4'>
+                    <h2 class='text-center'>PROFILE</h2>
+                    <div class='card m-2 text-center'>
+                        <div class='card-body'>
+                            <h4 class='card-title'>
+                                Your motto
+                            </h4>
+                            <p class='card-text'>
+                                There is always time for a beer
+                            </p>
+                            <footer class="blockquote-footer" th:text="${user?.name}"></footer>
+                        </div>
+                    </div>
+                    
                 </div>
-            </div>
-             <div class='row'>
-                <div class='col maincolumn'>
-                    <h2>YOUR POSTS</h2>
+                <div class='col-12 col-md-8'>
+                    <h2 class='text-center'>YOUR POSTS</h2>
                     <div th:replace="fragments/posts :: posts(posts=${user?.posts})"></div>
                 </div>
             </div>

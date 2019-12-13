@@ -10,5 +10,5 @@ import sec.project.domain.Post;
  * @author miika
  */
 public interface PostRepository extends JpaRepository<Post, Long> {
-     List<Post> findAllByOrderByCreatedDesc();
+     List<Post> findTop100ByOrderByCreatedDesc();
 }

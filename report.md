@@ -12,9 +12,11 @@ In the application, user-supplied data related to Account object is validated on
 
 Malicious user could bypass client-side validation and make request directly to the server. Since there is no validation of user input at the server, this could allow attacker to inject malicious code in the database.
 
+Also, validation constraints aren't nearly strict enought. For example username have to be between 5-20 and password 5-100 characters. There is no constraints for the format; one could enter 5 blanks as a password and username. 
+
 ### Steps to fix
 
-Always validate and sanitize user-supplied data on server. When creating Java domain objects, use annotations to specify the constraints of the attributes. Since Post class is annotated as @Entity, these constraints apply also in the database. Validations can be made with @Valid annotation in controller which takes care of creating the post. Fixed submitPost() method could look something like this
+Always validate and sanitize user-supplied data on server. When creating Java domain objects, use annotations to specify the constraints of the attributes. Validations can be made with @Valid annotation. Fixed submitPost() method in PostController could look something like this
 
     @RequestMapping(value = "/posts", method = RequestMethod.POST)
     public String submitPost(Authentication authentication, @Valid @ModelAttribute Post post, BindingResult result) {
@@ -29,13 +31,19 @@ Always validate and sanitize user-supplied data on server. When creating Java do
         return "redirect:/posts";
     }
 
-Also, don't forget to sanitize extra whitespaces on input. Validations has to be made in all methods, which are responsible for persisting user-supplied data.
+Increase passwords minimum required length at least to 8 characters. Add some constraints for the passwords format and sanitize the user input (trim extra white spaces). You could define those rules with @Pattern annotation, for example
+
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")
+
+Pattern verifies that password is containing at least one number, one lower case and one upper case letter, one special character, contains no white space and is at least 8 characters long ([source](https://stackoverflow.com/questions/3802192/regexp-java-for-password-validation)). You could also create your own custom validator class for more complex checks.
+
+Validations has to be made in all methods, which are responsible for persisting user-supplied data.
 
 ## Flaw 2 - Cross-site Scripting (XSS)
 
 ### Description
 
-Application is using Thymeleaf for Java templates. Thymeleaf is escaping all the data coming from the server by default. However, one fragment in title.html is using *th:utext* instead of *th:text*.
+Application is using Thymeleaf for Java templates. Thymeleaf is escaping data by default. However, one fragment in title.html is using *th:utext* instead of *th:text*.
 
     <div th:fragment="title(text)" class='row'>
         <div class='col jumbotron text-center mt-2'>
@@ -49,7 +57,7 @@ While *th:text* expression escapes input, *th:utext* doesn't. This means that if
 
 ### Steps to fix
 
-Always escape and sanitize user-supplied data. In this example it would have been sufficient fix just to use th:text instead of th:utext. Of course, this has to be done manually when not using template engines and frameworks which does this for you.
+Always escape and sanitize user-supplied data in frontend, too. In this example it would have been sufficient fix just to use th:text instead of th:utext. Of course, this has to be done manually when not using template engines and frameworks which does this for you.
 
 ## Flaw 3 - Security misconfiguration
 
@@ -61,11 +69,11 @@ Application is using custom security configuration which is defined in SecurityC
     http.csrf().disable();
     http.headers().frameOptions().sameOrigin();
 
-It seems that developer is disabled default csrf() settings, which adds CSRF (cross-site request forgery) defense by adding CSRF-token into forms. 
+It seems that developer has disabled default csrf() settings - which adds CSRF (cross-site request forgery) defense by adding CSRF-token into forms - for testing purposes. 
 
 ### Steps to fix
 
-Do not disable security settings in order to debug application. If you have to, use different security settings for development and production environments. Spring uses *application.properties* files for configuration profiles. Define *application-test.properties* file for test environment. Spring uses this file when environment variable SPRING_PROFILES_ACTIVE="test". Java classes can be set for test environment by annotating class
+Do not disable security settings in order to debug application. If you have to, use different security settings for development and production environments. Spring uses *application.properties* files for configuration profiles. Define *application-test.properties* file for test environment. When environment variable SPRING_PROFILES_ACTIVE is set to "test", Spring will look for *application-test.properties* file for configurations. Java classes can be set for test environment by annotating class
 
     @Profile("test")
 
@@ -77,7 +85,7 @@ You can view your own profile in profile-page (Navigation bar > Profile) when yo
 
 ### Steps to fix
 
-Create routers (controller) in such way, that they are not vulnerable to parameter tampering. Use long random parameters in path variables. In this case, it wouldn't be necessary even to use {parameter} in the path, since we are always requesting logged users profile. At least, always verify that user is authorized to make request. Fixed getUserProfile() method could look like this
+Create routers (controller) in such way, that they are not vulnerable to parameter tampering. Use long random parameters in path variables. In this case, it wouldn't be necessary even to use *{parameter}* in the path, since we are always requesting logged users profile. At minimum, always verify that user is authorized to make request. Fixed getUserProfile() method could look like this
 
     @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
     public String getUserProfile(Model model, Authentication authentication, @PathVariable Long id) {
@@ -97,24 +105,17 @@ There is also broken access control flaw in the deleteUser() and deletePost() me
 
 There is couple of alarming things on our application concerning authentication. 
 
-#### Default admin username and password
+#### Default admin user
 
 If you look at the SecurityConfiguration class, you notice that application has default username "admin" with password "admin", and that user has ADMIN rights to the application. This user has access to */users* path, which will fetch all the registered users and show their personal information.
 
-#### Too weak validations
+#### Default database password
 
-User input is validated in register form and in the server. However, validation constraints aren't nearly strict enought. Currently, username have to be between 5-20 and password 5-100 characters. There is no constraints for the passwords format either; one could enter 5 blanks as a password and username. 
+There is no no database username and password set in *application.properties* file. This means, that Spring uses default username "sa" and password "". Anyone who has access to database, could easily try default password and get access to all the data.
 
 ### Steps to fix
 
-Change default weak passwords to strong ones. In cryptography length is strength. Increase passwords minimum required length at least to 8 characters. Add some constraints for the passwords format and sanitize the user input. With Java validation constraints, you could define those rules with @Pattern annotation, for example
-
-    @NotNull
-    @Size(min = 8, max = 100, message = "Password should be between 5-100 character")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")
-    private String password
-
-Pattern verifies that password is containing at least one number, one lower case and one upper case letter, one special character, contains no white space and is at least 8 characters long ([source](https://stackoverflow.com/questions/3802192/regexp-java-for-password-validation)). You could also create your own custom validator class for more complex checks.
+Change default weak passwords to strong ones. In cryptography length is strength. Password which is used only programmatically (user doesn't have to remember it), like password in the database, should be veeeery looong.
 
 ## Flaw 6 - Sensitive data exposure
 
