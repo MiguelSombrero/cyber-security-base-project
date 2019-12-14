@@ -1,10 +1,10 @@
 .maincolumn {
     max-width: 25rem;
     margin: auto;
-    padding: 1rem
+    padding: 1rem;
 }
 .jumbotron {
-    background-color: rgba(171, 209, 243, 0.8);
+    background-color: rgb(171, 209, 243);
 }
 .jumbotron a {
     color: black;
@@ -17,8 +17,14 @@ h1 {
     font-family: Impact, Charcoal, sans-serif;
     font-size: 3.5rem
 }
+body {
+    
+}
+h2 {
+    color: rgb(171, 209, 243);
+}
 h2, h3 {
-    font-family: "Lucida Console", Monaco, monospace
+    font-family: "Lucida Console", Monaco, monospace;
 }
 .card {
     border: 1px solid rgb(171, 209, 243);

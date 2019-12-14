@@ -83,14 +83,7 @@
             <version>3.7.1</version>
             <scope>test</scope>
         </dependency>
-        <!-- tarvitaanko?
-        <dependency>
-            <groupId>org.fluentlenium</groupId>
-            <artifactId>fluentlenium-core</artifactId>
-            <version>0.13.1</version>
-            <scope>test</scope>
-        </dependency>
-        -->
+        
         <dependency>
             <groupId>org.fluentlenium</groupId>
             <artifactId>fluentlenium-assertj</artifactId>

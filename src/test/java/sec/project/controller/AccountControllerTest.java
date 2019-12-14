@@ -268,4 +268,30 @@ public class AccountControllerTest {
          assertEquals("Jukka Roinanen", user.getName());
          assertEquals("jukka", user.getUsername());
     }
+    
+    @Test
+    @WithMockUser("jukka")
+    public void cannotGetUsersPageIfNotAdmin() throws Exception {
+        MvcResult result = mock.perform(get("/users"))
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+    }
+    
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    public void canGetUsersPageIfAdmin() throws Exception {
+        List<Account> users = utils.getUsers();
+        
+        MvcResult result = mock.perform(get("/users"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Registered users")))
+                .andExpect(view().name("users"))
+                .andExpect(model().attributeExists("users"))
+                .andReturn();
+        
+         List<Account> usersFromModel = (List) result.getModelAndView().getModel().get("users");
+         
+         assertEquals(users.size(), usersFromModel.size());
+    }
+    
 }

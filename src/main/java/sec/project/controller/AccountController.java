@@ -54,7 +54,7 @@ public class AccountController {
     @RequestMapping(value = "/users/{id}", method = RequestMethod.DELETE)
     public String deleteUser(@PathVariable Long id) {
         accountService.deleteUser(id);
-        return "redirect:/login";
+        return "redirect:/logout";
     }
     
     @RequestMapping(value = "/users/{username}", method = RequestMethod.GET)

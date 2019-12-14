@@ -73,7 +73,7 @@ public class PostControllerTest {
     public void getPostFormWithAuthenticatedUser() throws Exception {
         mock.perform(get("/post"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Write a story to Cyber Security Forum")))
+                .andExpect(content().string(containsString("Post to forum")))
                 .andExpect(view().name("post"));
     }
     

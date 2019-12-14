@@ -28,19 +28,24 @@
                         <a class="nav-link" th:href="@{/users}">Users</a>
                     </li>
                 </ul>
-                <ul class="navbar-nav">
-                    <li class="navbar-item">
-                        <a class="nav-link" th:href="@{/about}">About</a>
-                    </li>
-                </ul>
                 <ul sec:authorize="isAnonymous()" class="navbar-nav">
                     <li class="navbar-item">
                         <a class="nav-link" th:href="@{/login}">Login</a>
                     </li>
                 </ul>
+                <ul sec:authorize="isAnonymous()" class="navbar-nav">
+                    <li class="navbar-item">
+                        <a class="nav-link" th:href="@{/register}">Register</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="navbar-item">
+                        <a class="nav-link" th:href="@{/about}">About</a>
+                    </li>
+                </ul>
                 <ul sec:authorize="isAuthenticated()" class="navbar-nav">
                     <li class="navbar-item">
-                        <form th:action="@{/logout}" action="#" method="POST">
+                        <form th:action="@{/logout}" action="#" th:method="POST">
                             <input id="logoutButton" type="submit" value="Logout" class="btn nav-link"></input>
                         </form>
                     </li>

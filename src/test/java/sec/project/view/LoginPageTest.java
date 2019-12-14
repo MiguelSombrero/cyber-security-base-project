@@ -1,14 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package sec.project.view;
 
-import java.util.concurrent.TimeUnit;
 import javax.transaction.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.fluentlenium.core.hook.wait.Wait;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -21,14 +15,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import sec.project.controller.TestUtils;
 import sec.project.domain.Account;
-import sec.project.repository.AccountRepository;
 
 /**
  *
  * @author miika
  */
 
-@Wait
 @Transactional
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -73,6 +65,8 @@ public class LoginPageTest extends org.fluentlenium.adapter.junit.FluentTest {
         find("#password").fill().with("jukka");
         find("#loginButton").click();
         
+        await().untilPage().isLoaded();
+        
         assertTrue(pageSource().contains("Welcome to the Cyber Security forum!"));
         assertTrue(pageSource().contains("Write post"));
         assertTrue(pageSource().contains("Profile"));
@@ -91,8 +85,8 @@ public class LoginPageTest extends org.fluentlenium.adapter.junit.FluentTest {
         find("#username").fill().with("jukka");
         find("#password").fill().with("jukka");
         find("#loginButton").click();
-        goTo("http://localhost:" + port + "/posts");
-        find("#logoutButton").click();
+       
+        $("#logoutButton").click();
         
         assertTrue(pageSource().contains("You have been logged out ..."));
         assertThat(window().title()).contains("Login");

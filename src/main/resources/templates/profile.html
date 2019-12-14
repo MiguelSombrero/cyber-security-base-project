@@ -13,7 +13,7 @@
                 <div class="col d-flex justify-content-center">
                     <nav class="navbar d-flex justify-content-center">
                         <a class="nav-link disabled" th:href="@{/}">Change password</a>
-                        <form th:action="@{/users/{id}(id=${user?.id})}" action="#" method="DELETE">
+                        <form th:action="@{/users/{id}(id=${user?.id})}" action="#" th:method="DELETE">
                             <input type="submit" value="Delete account" class="btn nav-link"></input>
                         </form>
                     </nav>
