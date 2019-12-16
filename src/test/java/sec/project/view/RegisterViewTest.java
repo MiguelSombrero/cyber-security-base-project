@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import sec.project.controller.TestUtils;
@@ -33,8 +34,12 @@ public class RegisterViewTest extends org.fluentlenium.adapter.junit.FluentTest 
     @Autowired
     private TestUtils utils;
     
+    @Autowired
+    private PasswordEncoder encoder;
+    
     @Before
     public void setUp() {
+        utils.saveUser("Jukka Roinanen", "jukka", encoder.encode("jukka"));
         goTo("http://localhost:" + port + "/register");
     }
     
@@ -124,21 +129,13 @@ public class RegisterViewTest extends org.fluentlenium.adapter.junit.FluentTest 
     public void cannotRegisterWithUsernameTaken() {
         long count = utils.getUsers().size();
         
-        find("#username").fill().with("username");
-        find("#password").fill().with("password");
-        find("#name").fill().with("Miguel");
+        find("#username").fill().with("jukka");
+        find("#password").fill().with("jukka");
+        find("#name").fill().with("Jukka");
         find("#registerButton").click();
         
-        assertEquals(count + 1, utils.getUsers().size());
-        
-        goTo("http://localhost:" + port + "/register");
-        find("#username").fill().with("username");
-        find("#password").fill().with("password");
-        find("#name").fill().with("Miguel");
-        find("#registerButton").click();
-        
-        assertEquals(count + 1, utils.getUsers().size());
-        assertTrue(pageSource().contains("username allready taken - please select another one"));
+        assertEquals(count, utils.getUsers().size());
+        assertTrue(pageSource().contains("username already taken - please select another one"));
     }
     
     @Test

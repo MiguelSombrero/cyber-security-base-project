@@ -10,7 +10,7 @@ In the application, user-supplied data related to Account object is validated on
 
     <input class="form-control p-2" type="text" autofocus="true" name="title" placeholder="A title of your post" minlength="1" maxlength="50" required></input>
 
-Malicious user could bypass client-side validation and make request directly to the server. Since there is no validation of user input at the server, this could allow attacker to inject malicious code in the database.
+Attacker could bypass client-side validation and make request directly to the server. Since there is no validation of user input at the server, this could allow attacker to inject malicious code in the database.
 
 Also, validation constraints aren't nearly strict enought. For example username have to be between 5-20 and password 5-100 characters. There is no constraints for the format; one could enter 5 blanks as a password and username. 
 
@@ -43,7 +43,7 @@ Validations has to be made in all methods, which are responsible for persisting 
 
 ### Description
 
-Application is using Thymeleaf for Java templates. Thymeleaf is escaping data by default. However, one fragment in title.html is using *th:utext* instead of *th:text*.
+Application is using Thymeleaf template engine. Thymeleaf is escaping data by default. However, one fragment in title.html is using *th:utext* instead of *th:text*.
 
     <div th:fragment="title(text)" class='row'>
         <div class='col jumbotron text-center mt-2'>
@@ -69,7 +69,7 @@ Application is using custom security configuration which is defined in SecurityC
     http.csrf().disable();
     http.headers().frameOptions().sameOrigin();
 
-It seems that developer has disabled default csrf() settings - which adds CSRF (cross-site request forgery) defense by adding CSRF-token into forms - for testing purposes. 
+It seems that developer has disabled default csrf() settings for testing purposes, which adds CSRF (cross-site request forgery) defense by adding CSRF-token into forms. 
 
 ### Steps to fix
 
@@ -111,7 +111,7 @@ If you look at the SecurityConfiguration class, you notice that application has 
 
 #### Default database password
 
-There is no no database username and password set in *application.properties* file. This means, that Spring uses default username "sa" and password "". Anyone who has access to database, could easily try default password and get access to all the data.
+There is no no database username and password set in *application.properties* file. This means, that Spring uses default username "sa" and password "". Anyone who has access to database, could easily get access to all the data by brute forcing default usernames and passwords.
 
 ### Steps to fix
 

@@ -16,7 +16,7 @@ Idea is to implement web application Idea is to implement web application, which
 
 ## Tests
 
-System level tests are executed with SpringBootTest for testing controllers, and with FluentLenium for testing views. Controllers have pretty good test coverage, but with views I only tested login and register pages. Services is also lacking unit tests.
+Integration tests are executed with SpringBootTest (controllers) and FluentLenium (views). Controllers have pretty good test coverage, but with views I only tested login and register pages. Services is also lacking unit tests.
 
 ## Commands
 
@@ -27,6 +27,10 @@ To clone project into your machine
 Start application in your favourite IDE or with command
 
     mvn spring-boot:run
+
+Run tests
+
+    mvn test
 
 ## Environment
 

@@ -4,7 +4,6 @@ package sec.project.controller;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,7 +34,7 @@ public class AccountController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String registerUser(@Valid @ModelAttribute Account account, BindingResult result) {
         if (!accountService.accountIsUnique(account.getUsername())) {
-            result.addError(new FieldError("account", "username", "username allready taken - please select another one"));
+            result.addError(new FieldError("account", "username", "username already taken - please select another one"));
         }
         if (result.hasErrors()) {
             return "register";

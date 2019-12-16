@@ -6,7 +6,6 @@ import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -244,7 +243,7 @@ public class AccountControllerTest {
         
         MvcResult result = mock.perform(MockMvcRequestBuilders.delete("/users/" + users.get(0).getId()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"))
+                .andExpect(redirectedUrl("/logout"))
                 .andReturn();
         
         assertEquals(users.size() - 1, utils.getUsers().size());

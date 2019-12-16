@@ -37,6 +37,7 @@ public class PostService {
         return postRepository.findTop100ByOrderByCreatedDesc();
     }
     
+    @CacheEvict(cacheNames = "posts-cache", allEntries=true)
     public void deletePost(Long id) {
         postRepository.deleteById(id);
     }

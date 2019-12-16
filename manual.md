@@ -1,12 +1,12 @@
 # User manual
 
-Application starts a server into path http://localhost:8080.
+Application starts a server into path http://localhost:8080
 
 ## Create an account and login
 
-At default anonymous user is redirected to login page. Application has default admin user, with username "admin" and password "admin". This user is only loaded in memory (not in db), and can be used for navigating the pages, but cannot be used for example for posting in the forum.
+Anonymous user is redirected to login page. Application has default admin user, with username "admin" and password "admin". This user is only loaded in memory (not in db), and can be used for navigating the pages, but cannot be used for example for posting in the forum.
 
-Go to register page (Navigation bar > Register) to register your account. Username and password must be at least 5 characters long. After you have created an account, you are redirected to login page, where you can login to application.
+Go to register page (Navigation bar > Register) to register your account. Username and password must be at least 5 characters. After you have created an account, you are redirected to login page, where you can login to application.
 
 ## Read posts
 
