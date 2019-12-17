@@ -2,3 +2,7 @@
 /database.mv.db
 /nbproject/
 /src/main/resources/data.sql
+/.settings/
+/.classpath
+/.factorypath
+/.project
