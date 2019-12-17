@@ -1,7 +1,5 @@
 # Vulnerability report
 
-Link to [repository](https://github.com/MiguelSombrero/cyber-security-base-project)
-
 ## Flaw 1 - Injection
 
 ### Description

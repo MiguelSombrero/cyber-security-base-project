@@ -17,6 +17,5 @@ public class DefaultController {
     public String about() {
         return "about";
     }
-    
 }
 
